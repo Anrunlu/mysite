@@ -135,7 +135,7 @@
                             $("#comment_list").prepend(comment_html);
                         }else{
                             // 插入回复
-                            var reply_html = '<div class="reply"><span>'+ data['us'] +'</span><span>('+ data['comment_time'] +'):</span><span>回复</span><span>'+ data['repl_to'] +':</span><div id="comment_'+ data['pk'] +'">'+ data['text'] +'</div><a href="javascript:reply('+ data['pk'] +')">回复</a></div>';
+                            var reply_html = '<div class="reply"><span>'+ data['username'] +'</span><span>('+ data['comment_time'] +'):</span><span>回复</span><span>'+ data['reply_to'] +':</span><div id="comment_'+ data['pk'] +'">'+ data['text'] +'</div><a href="javascript:reply('+ data['pk'] +')">回复</a></div>';
                             $("#root_" + data['root_pk']).append(reply_html);
                         }
                         
