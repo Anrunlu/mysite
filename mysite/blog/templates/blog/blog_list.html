@@ -4,6 +4,8 @@
 {% block nav_blog_active %}active{% endblock %}
 
 {% load staticfiles %}
+{% load comment_tags %}
+
 {% block header_extend %}
     <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
 {% endblock %}
@@ -24,7 +26,8 @@
                                 <p class="blog-info">
                                     <span class="glyphicon glyphicon-tag"></span>&nbsp;<a href="{% url 'blogs_with_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a>&nbsp;&nbsp;
                                     <span class="glyphicon glyphicon-time"></span>&nbsp;{{ blog.created_time|date:"Y-m-d G:n:s" }}&nbsp;&nbsp;
-                                    <span class="glyphicon glyphicon-eye-open"></span>&nbsp;{{ blog.get_read_num }}
+                                    <span class="glyphicon glyphicon-eye-open"></span>&nbsp;{{ blog.get_read_num }}&nbsp;&nbsp;
+                                    评论：({% get_comment_count blog %})
                                 </p>
                                 <p>{{ blog.content|striptags|truncatechars:100 }}</p>
                             </div>

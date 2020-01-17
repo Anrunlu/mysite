@@ -25,7 +25,7 @@ def update_comment(request):
         # 返回数据
         data['status'] = 'SUCCESS'
         data['username'] = comment.user.username
-        data['comment_time'] = comment.comment_time.strftime('%Y-%m-%d %H:%M:%S')
+        data['comment_time'] = comment.comment_time.timestamp()
         data['text'] = comment.text
         if parent:
             data['reply_to'] = comment.reply_to.username
@@ -37,5 +37,4 @@ def update_comment(request):
         data['status'] = 'ERROR'
         data['message'] = list(comment_form.errors.values())[0][0]
     return JsonResponse(data)
-    # return render(request, 'error.html', {'message' : comment_form.errors, 'redirect_to' : referer})
 
