@@ -8,6 +8,7 @@
 
 {% load staticfiles %}
 {% load comment_tags %}
+{% load likes_tags %}
 
 {% block header_extend %}
     <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
@@ -29,6 +30,11 @@
                     <li>评论：({% get_comment_count blog %})</li>
                 </ul>
                 <div class="blog-content">{{ blog.content|safe }}</div>
+                <div class="like" onclick="likeChange(this, '{% get_content_type blog %}',  {{blog.pk}})">
+                    <span class="glyphicon glyphicon-thumbs-up {% get_like_status blog %}"></span>
+                    <span class="like-num">{% get_like_count blog %}</span>
+                    <span>喜欢</span>  
+                </div>
                 <div class="blog-more">
                     <p>上一篇：
                         {% if previous_blog %}
@@ -84,6 +90,10 @@
                             <div id="comment_{{ comment.pk }}">
                                 {{ comment.text|safe }}
                             </div>
+                            <div class="like" onclick="likeChange(this, '{% get_content_type comment %}',  {{comment.pk}})">
+                                <span class="glyphicon glyphicon-thumbs-up {% get_like_status comment %}"></span>
+                                <span class="like-num">{% get_like_count comment %}</span>
+                            </div>
                             <a href="javascript:reply({{ comment.pk }})">回复</a>
 
                             {% for reply in comment.root_comment.all %}
@@ -94,6 +104,11 @@
                                     <span>{{ reply.reply_to.username }}:</span>
                                     <div id="comment_{{ reply.pk }}">
                                         {{ reply.text|safe }}
+                                    </div>
+                                    <div class="like" onclick="likeChange(this, '{% get_content_type reply %}',  {{reply.pk}})">
+                                        <span class="glyphicon glyphicon-thumbs-up {% get_like_status reply %}"></span>
+                                        <span class="like-num">{% get_like_count reply %}</span>
+                                        <span>喜欢</span>  
                                     </div>
                                     <a href="javascript:reply({{ reply.pk }})">回复</a>
                                 </div>
@@ -106,11 +121,20 @@
                 </div>
             </div>
         </div>
+
     </div>
 {% endblock %}
 
 {% block script_extends %}
     <script type="text/javascript">
+
+        String.prototype.format = function(){
+            var str = this
+            for (let i = 0; i < arguments.length; i++) {
+                var str = str.replace(new RegExp('\\{' + i + '\\}', 'g'), arguments[i]);
+            };
+            return str;
+        }
 
         function numFormat(num){
             return ('00' + num).substr(-2);
@@ -163,11 +187,40 @@
                         
                         if($("#reply_comment_id").val()=='0'){
                             // 插入评论
-                            var comment_html = '<div id="root_'+ data['pk'] +'" class="comment"><span>' + data['username'] + '</span><span>('+ timeFormat(data['comment_time']) +'):</span><div id="comment_'+ data['pk'] +'">'+ data['text'] +'</div><a href="javascript:reply('+ data['pk'] +')">回复</a></div>';
+                            var comment_html = '<div id="root_{0}" class="comment">' +
+                                                    '<span>{1}</span>' +
+                                                    '<span>({2}):</span>' +
+                                                    '<div id="comment_{0}">' +
+                                                        '{3}' +
+                                                    '</div>' +
+                                                    '<div class="like" onclick="likeChange(this, \'{4}\', {0})">' +
+                                                        '<span class="glyphicon glyphicon-thumbs-up"></span> ' +
+                                                        '<span class="like-num">0</span>' +
+                                                    '</div>' +
+                                                    '<a href="javascript:reply({0})">回复</a>' +
+                                                '</div>';
+                            var comment_html = comment_html.format(data['pk'], data['username'], timeFormat(data['comment_time']), data['text'], data['content_tpye']);
                             $("#comment_list").prepend(comment_html);
+
                         }else{
                             // 插入回复
-                            var reply_html = '<div class="reply"><span>'+ data['username'] +'</span><span>('+ timeFormat(data['comment_time']) +'):</span><span>回复</span><span>'+ data['reply_to'] +':</span><div id="comment_'+ data['pk'] +'">'+ data['text'] +'</div><a href="javascript:reply('+ data['pk'] +')">回复</a></div>';
+                            var reply_html = '<div class="reply">' +
+                                    '<span>{1}</span>' +
+                                    '<span>({2}):</span>' +
+                                    '<span>回复</span>' +
+                                    '<span>{3}:</span>' +
+                                    '<div id="comment_{0}">' +
+                                        '{4}' +
+                                    '</div>' +
+                                    '<div class="like" onclick="likeChange(this, \'{5}\',  {0})">' +
+                                        '<span class="glyphicon glyphicon-thumbs-up"></span> ' +
+                                        '<span class="like-num">0</span>' +
+                                        '<span>喜欢</span>' + 
+                                    '</div>' +
+                                    '<a href="javascript:reply({0})">回复</a>' +
+                                '</div>';
+                            reply_html = reply_html.format(data['pk'], data['username'], timeFormat(data['comment_time']), data['reply_to'], data['text'], data['content_tpye']);
+
                             $("#root_" + data['root_pk']).append(reply_html);
                         }
                         
@@ -190,8 +243,45 @@
             return false;
         });
 
+        function likeChange(obj, content_type, object_id){
+            var is_like = obj.getElementsByClassName('active').length == 0;
+            $.ajax({
+                url: "{% url 'like_change' %}",
+                type: 'GET',
+                data: {
+                    content_type: content_type,
+                    object_id: object_id,
+                    is_like: is_like
+                },
+                cache: false,
+                success: function(data){
+                    console.log(data);
+                    if(data['status'] == 'SUCCESS'){
+                        // 更新点赞状态
+                        var element = $(obj.getElementsByClassName('glyphicon'));
+                        if(is_like){
+                            element.addClass('active');
+                        }else{
+                            element.removeClass('active');
+                        }
+                        // 更新点赞数量
+                        var liked_num = $(obj.getElementsByClassName('like-num'));
+                        liked_num.text(data['like_num']);
+                    }else{
+                        if(data['code']==400){
+                            $("#login_modal").modal('show');
+                        }else{
+                            alert(data['message']);
+                        }
+                    }
+                },
+                error: function(xhr){
+                    console.log(xhr)
+                }
+            })
+        }
         
-        
+    
     </script>
 {% endblock %}
 

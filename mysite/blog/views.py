@@ -6,6 +6,7 @@ from django.conf import settings
 from read_statistics.utils import read_statistics_once_read
 from .models import Blog, BlogType
 
+
 def get_blog_list_common_data(request, blogs_all_list):
     # 进行分页
     paginator = Paginator(blogs_all_list, settings.EACH_PAGE_BLOGS_NUMBER)
