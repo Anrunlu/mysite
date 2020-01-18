@@ -15,7 +15,7 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="{% url 'home' %}">
-                    个人博客网站
+                    润鲁博客
                 </a>
                 <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
                     <span class="icon-bar"></span>
@@ -103,5 +103,42 @@
 
     {% block script_extends %}{% endblock %}
 
+
+    <div id="footer" class="page-bottom">
+            
+        <div class="container">
+            <div class="col-sm-4 hidden-xs">
+                <div class="content">
+                    <h4 class="title">关于本站</h4>
+                    <p>1、基于Django+Bootstrap开发</p>
+                    <p>2、主要发表学习笔记等</p>
+                    <p>3、本站于 2019-11-01 开始建站</p>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="content">
+                    <h4 class="title">建议反馈</h4>
+                    <p>1、可在相应的博文底下评论</p>
+                    <p>2、我的QQ:1739046583</p>
+                </div>
+            </div>
+
+            <div class="col-sm-4 hidden-xs">
+                <div class="content">
+                    <h4 class="title">友情链接</h4>
+                    <p><a href="https://www.qfnu.edu.cn/" target=_blank>曲阜师范大学</a></p>
+                    <p><a href="" target=_blank>QQ交流群：建设中...</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="copyright">
+            <span>Welcome to visit my website &copy; 安润鲁</span>
+        </div>
+    </div>
+
+
 </body>
+
 </html>

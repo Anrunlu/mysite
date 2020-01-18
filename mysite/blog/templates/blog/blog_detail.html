@@ -20,14 +20,14 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-xs-10 col-xs-offset-1">
+            <div class="col-xs-12 col-md-10 col-md-offset-1">
                 <h3>{{ blog.title }}</h3>
                 <ul class="blog-info-description">
-                    <li>作者：{{ blog.author }}</li>
-                    <li>分类：<a href="{% url 'blogs_with_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a></li>
-                    <li>发表日期：{{ blog.created_time|date:"Y-m-d G:i:s" }}</li>
-                    <li>阅读：({{ blog.get_read_num }})</li>
-                    <li>评论：({% get_comment_count blog %})</li>
+                    <li><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ blog.author }}</li>
+                    <li><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;<a href="{% url 'blogs_with_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a></li>
+                    <li><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;{{ blog.created_time|date:"Y-m-d G:i:s" }}</li>
+                    <li><span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;{{ blog.get_read_num }}</li>
+                    <li><span class="glyphicon glyphicon-comment"></span>&nbsp;&nbsp;{% get_comment_count blog %}</li>
                 </ul>
                 <div class="blog-content">{{ blog.content|safe }}</div>
                 <div class="like" onclick="likeChange(this, '{% get_content_type blog %}',  {{blog.pk}})">
@@ -36,14 +36,14 @@
                     <span>喜欢</span>  
                 </div>
                 <div class="blog-more">
-                    <p>上一篇：
+                    <p class="pull-left">上一篇：
                         {% if previous_blog %}
                             <a href="{% url 'blog_detail' previous_blog.pk %}">{{ previous_blog.title }}</a>
                         {% else %}
                             没有了
                         {% endif %}
                     </p>
-                    <p>下一篇：
+                    <p class="pull-right">下一篇：
                         {% if next_blog %}
                             <a href="{% url 'blog_detail' next_blog.pk %}">{{ next_blog.title }}</a>
                         {% else %}
@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-10 col-xs-offset-1">
+            <div class="col-xs-12 col-md-10 col-md-offset-1">
                 <div class="comment-area">
                     <h3 class="comment-area-title">提交评论</h3>
                     {% if user.is_authenticated %}
@@ -85,32 +85,39 @@
                         {% get_comment_list blog as comments %}
                         {% for comment in comments %}
                         <div id="root_{{ comment.pk }}" class="comment">
-                            <span>{{ comment.user.username }}</span>
-                            <span>({{ comment.comment_time|date:"Y-m-d G:i:s" }}):</span>
-                            <div id="comment_{{ comment.pk }}">
-                                {{ comment.text|safe }}
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <span class="label label-success">{{ comment.user.username }}</span> ({{ comment.comment_time|date:"Y-m-d G:i:s" }}):
+                                    <div class="like" onclick="likeChange(this, '{% get_content_type comment %}',  {{comment.pk}})">
+                                        <span class="glyphicon glyphicon-thumbs-up {% get_like_status comment %}"></span>
+                                        <span class="like-num">{% get_like_count comment %}</span>
+                                    </div>
+                                    <a href="javascript:reply({{ comment.pk }})">回复</a>
+                                </div>
+                                <div id="comment_{{ comment.pk }}" class="panel-body">
+                                    {{ comment.text|safe }}
+                                </div>
                             </div>
-                            <div class="like" onclick="likeChange(this, '{% get_content_type comment %}',  {{comment.pk}})">
-                                <span class="glyphicon glyphicon-thumbs-up {% get_like_status comment %}"></span>
-                                <span class="like-num">{% get_like_count comment %}</span>
-                            </div>
-                            <a href="javascript:reply({{ comment.pk }})">回复</a>
 
+                            
                             {% for reply in comment.root_comment.all %}
                                 <div class="reply">
-                                    <span>{{ reply.user.username }}</span>
-                                    <span>({{ reply.comment_time|date:"Y-m-d H:i:s" }}):</span>
-                                    <span>回复</span>
-                                    <span>{{ reply.reply_to.username }}:</span>
-                                    <div id="comment_{{ reply.pk }}">
-                                        {{ reply.text|safe }}
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <span class="label label-success">{{ reply.user.username }}</span>
+                                            <span>回复</span>
+                                            <span class="label label-success">{{ reply.reply_to.username }}</span>
+                                            <div class="like" onclick="likeChange(this, '{% get_content_type reply %}',  {{reply.pk}})">
+                                                <span class="glyphicon glyphicon-thumbs-up {% get_like_status reply %}"></span>
+                                                <span class="like-num">{% get_like_count reply %}</span> 
+                                            </div>
+                                            <a href="javascript:reply({{ reply.pk }})">回复</a>
+                                            <span>({{ reply.comment_time|date:"Y-m-d H:i:s" }}):</span>
+                                        </div>
+                                        <div id="comment_{{ reply.pk }}" class="panel-body">
+                                            {{ reply.text|safe }}
+                                        </div>
                                     </div>
-                                    <div class="like" onclick="likeChange(this, '{% get_content_type reply %}',  {{reply.pk}})">
-                                        <span class="glyphicon glyphicon-thumbs-up {% get_like_status reply %}"></span>
-                                        <span class="like-num">{% get_like_count reply %}</span>
-                                        <span>喜欢</span>  
-                                    </div>
-                                    <a href="javascript:reply({{ reply.pk }})">回复</a>
                                 </div>
                             {% endfor %}
                         </div>
@@ -184,41 +191,47 @@
                 success: function(data){
                     if(data['status'] == 'SUCCESS'){
                         // 插入数据
-                        
                         if($("#reply_comment_id").val()=='0'){
                             // 插入评论
                             var comment_html = '<div id="root_{0}" class="comment">' +
-                                                    '<span>{1}</span>' +
-                                                    '<span>({2}):</span>' +
-                                                    '<div id="comment_{0}">' +
+                                                '<div class="panel panel-default">' +
+                                                    '<div class="panel-heading">' +
+                                                        '<span class="label label-success">{1}</span> ({2}):' +
+                                                        '<div class="like" onclick="likeChange(this, \'{4}\',  {0})">' +
+                                                            '<span class="glyphicon glyphicon-thumbs-up"></span>' +
+                                                            '<span class="like-num">0</span>' +
+                                                        '</div>' +
+                                                        '<a href="javascript:reply({0})">回复</a>' +
+                                                    '</div>' +
+                                                    '<div id="comment_{0}" class="panel-body">' +
                                                         '{3}' +
                                                     '</div>' +
-                                                    '<div class="like" onclick="likeChange(this, \'{4}\', {0})">' +
-                                                        '<span class="glyphicon glyphicon-thumbs-up"></span> ' +
-                                                        '<span class="like-num">0</span>' +
-                                                    '</div>' +
-                                                    '<a href="javascript:reply({0})">回复</a>' +
                                                 '</div>';
+
                             var comment_html = comment_html.format(data['pk'], data['username'], timeFormat(data['comment_time']), data['text'], data['content_tpye']);
                             $("#comment_list").prepend(comment_html);
 
                         }else{
                             // 插入回复
                             var reply_html = '<div class="reply">' +
-                                    '<span>{1}</span>' +
-                                    '<span>({2}):</span>' +
-                                    '<span>回复</span>' +
-                                    '<span>{3}:</span>' +
-                                    '<div id="comment_{0}">' +
-                                        '{4}' +
+                                    '<div class="panel panel-default">' +
+                                        '<div class="panel-heading">' +
+                                            '<span class="label label-success">{1}</span>' +
+                                            '<span>回复</span>' +
+                                            '<span class="label label-success">{3}</span>' +
+                                            '<div class="like" onclick="likeChange(this, \'{5}\',  {0})">' +
+                                                '<span class="glyphicon glyphicon-thumbs-up"></span>' +
+                                                '<span class="like-num">0</span>' +
+                                            '</div>' +
+                                            '<a href="javascript:reply({0})">回复</a>' +
+                                            '<span>({2}):</span>' +
+                                        '</div>' +
+                                        '<div id="comment_{0}" class="panel-body">' +
+                                            '{4}' +
+                                        '</div>' +
                                     '</div>' +
-                                    '<div class="like" onclick="likeChange(this, \'{5}\',  {0})">' +
-                                        '<span class="glyphicon glyphicon-thumbs-up"></span> ' +
-                                        '<span class="like-num">0</span>' +
-                                        '<span>喜欢</span>' + 
-                                    '</div>' +
-                                    '<a href="javascript:reply({0})">回复</a>' +
                                 '</div>';
+
                             reply_html = reply_html.format(data['pk'], data['username'], timeFormat(data['comment_time']), data['reply_to'], data['text'], data['content_tpye']);
 
                             $("#root_" + data['root_pk']).append(reply_html);

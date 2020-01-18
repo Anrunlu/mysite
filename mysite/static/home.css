@@ -7,8 +7,8 @@ h3.home-content {
 
 div#container {
     margin: 0 auto;
-    min-width: 30em;
-    max-width: 40em;
+    min-width: 25em;
+    max-width: 30em;
 }
 
 div.hot-data {

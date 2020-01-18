@@ -29,6 +29,7 @@ ul.blog-info-description {
 
 ul.blog-info-description li {
     display: inline-block;
+    margin-top: 1em;
     margin-right: 1em;
 }
 
