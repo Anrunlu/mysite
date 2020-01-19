@@ -148,6 +148,18 @@
             });
         });
 
+        //解决安卓移动端软键盘按钮顶上去
+        var win_h = $(window).height();
+        window.addEventListener('resize', function () {
+            var u = navigator.userAgent;
+            if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {         
+                if($(window).height() < win_h){
+                    $(".footer").hide();
+                }else{
+                    $(".footer").show();
+                }
+            }
+        });
 
         //底部栏置底
         //窗体改变大小事件
@@ -174,7 +186,7 @@
                 //若没有page-bottom类，body高度包含footer
                 //判断body高度小于浏览器时，则悬浮于底部
                 if(body_height < window_height){
-                    $(".footer").addClass('navbar-fixed-bottom');
+                    $(".footer").addClass('page-bottom');
                 }
             }
         });
