@@ -59,7 +59,7 @@
                     <h3 class="comment-area-title">提交评论</h3>
                     {% if user.is_authenticated %}
                         <form id="comment_form" action="{% url 'update_comment' %}" method="POST" style="overflow: hidden;">
-                            <label>{{ user.username }}，欢迎评论～</label>
+                            <label>{{ user.get_nickname_or_username }}，欢迎评论～</label>
                             <div id="reply_content_container" style="display: none;">
                                 <p id="reply_title">回复：</p>
                                 <div id="reply_content"></div>
@@ -87,7 +87,7 @@
                         <div id="root_{{ comment.pk }}" class="comment">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <span class="label label-success">{{ comment.user.username }}</span> ({{ comment.comment_time|date:"Y-m-d G:i:s" }}):
+                                    <span class="label label-success">{{ comment.user.get_nickname_or_username }}</span> ({{ comment.comment_time|date:"Y-m-d G:i:s" }}):
                                     <div class="like" onclick="likeChange(this, '{% get_content_type comment %}',  {{comment.pk}})">
                                         <span class="glyphicon glyphicon-thumbs-up {% get_like_status comment %}"></span>
                                         <span class="like-num">{% get_like_count comment %}</span>
@@ -104,9 +104,9 @@
                                 <div class="reply">
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
-                                            <span class="label label-success">{{ reply.user.username }}</span>
+                                            <span class="label label-success">{{ reply.user.get_nickname_or_username }}</span>
                                             <span>回复</span>
-                                            <span class="label label-success">{{ reply.reply_to.username }}</span>
+                                            <span class="label label-success">{{ reply.reply_to.get_nickname_or_username }}</span>
                                             <div class="like" onclick="likeChange(this, '{% get_content_type reply %}',  {{reply.pk}})">
                                                 <span class="glyphicon glyphicon-thumbs-up {% get_like_status reply %}"></span>
                                                 <span class="like-num">{% get_like_count reply %}</span> 
