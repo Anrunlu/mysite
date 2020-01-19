@@ -15,7 +15,25 @@ ul.navbar-right {
     margin-right: 0;
 }
 
-div#footer .copyright{
+
+div.footer {
+    margin-top: 3em;
+    background-color: #eee;
+    color: #555;
+}
+
+.page-bottom{
+    position:absolute;  /*或者fixed*/
+    bottom:0;
+    width: 100%;
+    background: #e7e7e7;
+    margin-top: 2.5em;
+    padding: 1em 0 0;
+    color: #777;
+}
+
+
+div.website-info .copyright{
     text-align: center;
     padding: 0.5em 0;
     margin-top: 1.5em;
@@ -23,16 +41,7 @@ div#footer .copyright{
     color: #e7e7e7;
 }
 
-div.page-bottom {
-    width: 100%;
-    clear: both;
-    background: #e7e7e7;
-    margin-top: 2.5em;
-    padding: 1em 0 0;
-    color: #777;
-}
-
-div.page-bottom .title {
+div.website-info .title {
     color: #424242;
     font-weight: bold;
     border-bottom: 1px solid #aaa;

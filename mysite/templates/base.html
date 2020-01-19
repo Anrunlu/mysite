@@ -92,6 +92,44 @@
         </div>
     </div>    
 
+    <!-- footer -->
+    <div class="footer">
+        <div class="website-info">
+            <div class="container">
+                <div class="col-sm-4 hidden-xs">
+                    <div class="content">
+                        <h4 class="title">关于本站</h4>
+                        <p>1、基于Django+Bootstrap开发</p>
+                        <p>2、主要发表学习笔记等</p>
+                        <p>3、本站于 2019-11-01 开始建站</p>
+                    </div>
+                </div>
+    
+                <div class="col-sm-4">
+                    <div class="content">
+                        <h4 class="title">建议反馈</h4>
+                        <p>1、可在相应的博文底下评论</p>
+                        <p>2、我的QQ:1739046583</p>
+                        <p>3、<a href="" target=_blank>QQ交流群：建设中...</a></p>
+                    </div>
+                </div>
+    
+                <div class="col-sm-4 hidden-xs">
+                    <div class="content">
+                        <h4 class="title">友情链接</h4>
+                        <p><a href="https://www.qfnu.edu.cn/" target=_blank>曲阜师范大学</a></p>
+                        <p><a href="" target=_blank>QQ交流群：建设中...</a></p>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="copyright">
+                <span>Welcome to visit my website &copy; 安润鲁</span>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         $('#login_modal_form').submit(function(event){
             event.preventDefault();
@@ -108,46 +146,46 @@
                     }
                 }
             });
-        })
+        });
+
+
+        //底部栏置底
+        //窗体改变大小事件
+        $(window).resize(function(){
+            //正文高度
+            var body_height = $(document.body).outerHeight(true);
+
+            //底部元素高度
+            var bottom_height = $("#footer").outerHeight(true);
+
+            //浏览器页面高度
+            var window_height = $(window).height();
+            
+            //判断并调整底部元素的样式
+            if($(".footer").hasClass('page-bottom')){
+                //若包含有page-bottom类，就应用了position设置
+                //当position为absolute时，body高度不包含这个元素
+                //所以页面高度需要判断body和footer之和若小于浏览器窗口
+                //则移除样式，让footer自然跟随在正文后面
+                if(body_height + bottom_height >= window_height){
+                    $(".footer").removeClass('page-bottom');
+                }
+            }else{
+                //若没有page-bottom类，body高度包含footer
+                //判断body高度小于浏览器时，则悬浮于底部
+                if(body_height < window_height){
+                    $(".footer").addClass('navbar-fixed-bottom');
+                }
+            }
+        });
+
+        //页面加载时，模拟触发一下resize事件
+        $(window).trigger('resize');
+
+
     </script>
 
     {% block script_extends %}{% endblock %}
-
-
-    <div id="footer" class="page-bottom">
-            
-        <div class="container">
-            <div class="col-sm-4 hidden-xs">
-                <div class="content">
-                    <h4 class="title">关于本站</h4>
-                    <p>1、基于Django+Bootstrap开发</p>
-                    <p>2、主要发表学习笔记等</p>
-                    <p>3、本站于 2019-11-01 开始建站</p>
-                </div>
-            </div>
-
-            <div class="col-sm-4">
-                <div class="content">
-                    <h4 class="title">建议反馈</h4>
-                    <p>1、可在相应的博文底下评论</p>
-                    <p>2、我的QQ:1739046583</p>
-                    <p>3、<a href="" target=_blank>QQ交流群：建设中...</a></p>
-                </div>
-            </div>
-
-            <div class="col-sm-4 hidden-xs">
-                <div class="content">
-                    <h4 class="title">友情链接</h4>
-                    <p><a href="https://www.qfnu.edu.cn/" target=_blank>曲阜师范大学</a></p>
-                    <p><a href="" target=_blank>QQ交流群：建设中...</a></p>
-                </div>
-            </div>
-        </div>
-
-        <div class="copyright">
-            <span>Welcome to visit my website &copy; 安润鲁</span>
-        </div>
-    </div>
 
 
 </body>
