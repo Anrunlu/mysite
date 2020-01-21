@@ -13,16 +13,24 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <a class="btn btn-primary" href="{% url 'notifications:mark_all_as_read' %}?next={% url 'my_notifications' %}">全部标记为已读</a>
-                <a class="btn btn-danger" href="{% url 'delete_my_read_notifications' %}">删除已读消息</a>
-                <ul class="notifications">
-                    {%for notification in request.user.notifications.all %}
-                        <li class="{% if not notification.unread %}read{% endif %}">[{{ notification.timesince }}之前] <a href="{% url 'my_notification' notification.pk %}">{{ notification.verb }}</a></li>
-                    {% empty %}
-                        <li>暂无消息</li>
-                    {% endfor %}
-                </ul>
+            <div class="col-xs-12 col-md-10 col-md-offset-1">
+
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <a class="btn btn-primary" href="{% url 'notifications:mark_all_as_read' %}?next={% url 'my_notifications' %}">全部标记为已读</a>
+                        <a class="btn btn-danger" href="{% url 'delete_my_read_notifications' %}">删除已读消息</a>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="notifications list-group">
+                            {%for notification in request.user.notifications.all %}
+                                <li class="list-group-item {% if not notification.unread %}read{% endif %}">[{{ notification.timesince }}之前] <a href="{% url 'my_notification' notification.pk %}">{{ notification.verb }}</a></li>
+                            {% empty %}
+                                <li class="list-group-item">暂无消息</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="panel-footer">点击消息可进入详情页面~</div>
+                </div>
             </div>
         </div>
     </div>

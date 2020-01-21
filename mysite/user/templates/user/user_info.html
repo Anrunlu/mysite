@@ -6,15 +6,23 @@
 {% block content%}
     <div class="container">
         <div class="row">
-            <div class="col-xs-10 col-xs-offset-1">
+            <div class="col-xs-12 col-md-10 col-md-offset-1">
                {% if user.is_authenticated %}
-                    <h2>{{ user.username }}</h2>
-                    <ul>
-                        <li>昵称： {{ user.get_nickname }}<a href="{% url 'change_nickname' %}?from={{ request.get_full_path }}">修改昵称</a></li>
-                        <li>邮箱： {% if user.email %}{{ user.email }}{% else %}未绑定{% endif %} <a href="{% url 'bind_email' %}?from={{ request.get_full_path }}">绑定邮箱</a></li>
-                        <li>上一次登录时间： {{ user.last_login|date:"Y-m-d H:i:s" }}</li>
-                        <li><a href="{% url 'change_password' %}">修改密码</a></li>
-                    </ul>
+               
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><span class="label label-success">{{ user.get_nickname_or_username }}</span>  <a href="{% url 'change_nickname' %}?from={{ request.get_full_path }}">修改昵称</a></h3>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item">账号： {{ user.username }}</li>
+                                <li class="list-group-item">邮箱： {% if user.email %}{{ user.email }}{% else %}未绑定{% endif %} <a href="{% url 'bind_email' %}?from={{ request.get_full_path }}">绑定邮箱</a></li>
+                                <li class="list-group-item">上一次登录时间： {{ user.last_login|date:"Y-m-d H:i:s" }}</li>
+                                <li class="list-group-item"><a href="{% url 'change_password' %}">修改密码</a></li>
+                            </ul>
+                        </div>
+                        <div class="panel-footer">交流互鉴互鉴才能共赢~</div>
+                    </div>
                {% else %}
                     <span>未登录，跳转到首页...</span>
                     <script type="text/javascript">
