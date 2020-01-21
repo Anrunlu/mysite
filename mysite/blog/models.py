@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
+from django.urls import reverse
 from ckeditor_uploader.fields import RichTextUploadingField
 from read_statistics.models import ReadNumExpandMethod, ReadDetail
 
@@ -26,6 +27,12 @@ class Blog(models.Model, ReadNumExpandMethod):
     # 描述字符
     def __str__(self):
         return "<Blog: %s>" % self.title
+
+    def get_url(self):
+        return reverse('blog_detail', kwargs={'blog_pk': self.pk})
+
+    def get_user(self):
+        return self.author
 
     class Meta:
         ordering = ['-created_time']

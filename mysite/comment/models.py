@@ -19,6 +19,12 @@ class Comment(models.Model):
     def __str__(self):
         return self.text
 
+    def get_url(self):
+        return self.content_object.get_url()
+
+    def get_user(self):
+        return self.user
+
     class Meta:
         ordering = ['comment_time']
 

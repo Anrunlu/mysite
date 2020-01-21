@@ -1,5 +1,5 @@
 import datetime
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from django.urls import reverse
@@ -35,3 +35,4 @@ def home(request):
     context['yesterday_hot_data'] = get_yesterday_hot_data(blog_content_type)
     context['hot_data_for_7_days'] = hot_data_for_7_days
     return render(request, 'home.html', context)
+    

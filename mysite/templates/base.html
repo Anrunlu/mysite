@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load notifications_tags %}
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -8,6 +9,7 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.7/css/bootstrap.min.css' %}">
+
     {% block header_extend %}{% endblock %}
 </head>
 <body>
@@ -34,17 +36,17 @@
                         <li><a href="{% url 'login' %}?from={{ request.get_full_path }}">登录</a></li>
                         <li><a href="{% url 'register' %}?from={{ request.get_full_path }}">注册</a></li>
                     {% else %}
+
+                        {% notifications_unread as unread_count %}
+
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
-                                {% if user.has_nickname %}
-                                    {{ user.username }}({{ user.get_nickname }}) 
-                                {% else %}
-                                    {{ user.username }}
-                                {% endif %}
+                                你好，{{ user.get_nickname_or_username }}
+                                <span class="badge unread-count live_notify_badge">{% if unread_count %}{{ unread_count }}{% endif %}</span>
                                 <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="{% url 'user_info' %}">个人资料</a></li>
-                                <li><a href="{% url 'change_password' %}">修改密码</a></li>
+                                <li><a href="{% url 'my_notifications' %}">我的消息&nbsp;&nbsp;<span class="badge unread-count live_notify_badge">{% if unread_count %}{{ unread_count }}{% endif %}</span></a></li>
                                 {% if user.is_staff or user.is_superuser %}
                                 <li><a href="{% url 'admin:index' %}">后台管理</a></li>
                                 {% endif %}
@@ -61,6 +63,7 @@
 
     <script type="text/javascript" src="{% static 'jquery-1.12.4.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'notifications/notify.js' %}"></script>
     
     {% block content %}{% endblock %}
 
@@ -196,6 +199,19 @@
 
 
     </script>
+
+    <!-- 自定义实时获取未读消息 -->
+    <script>
+        function my_special_notification_callback(data){
+            unread_count = data['unread_count'];
+            if (unread_count == 0) {
+                unread_count = '';
+            }
+            $('.live_notify_badge').text(unread_count);
+        }
+    </script>
+    <!-- notifications -->
+    {% register_notify_callbacks callbacks='my_special_notification_callback' %}
 
     <!-- 页面拓展Js -->
     {% block script_extends %}{% endblock %}

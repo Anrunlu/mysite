@@ -49,3 +49,7 @@ div.website-info .title {
     margin-bottom: 1em;
     margin-top: 1em;
 }
+
+.unread-count {
+    background-color: #d9534f!important;
+}

@@ -10,6 +10,7 @@ pylint = "*"
 django = "==2.2"
 django-ckeditor = "*"
 pillow = "*"
+django-notifications-hq = "*"
 
 [requires]
 python_version = "3.6"

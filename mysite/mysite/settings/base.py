@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'comment',
     'likes',
     'user',
+    'notifications',
+    'my_notifications',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +152,6 @@ CACHES = {
         'LOCATION': 'my_cache_table',
     }
 }
+
+# django-notifications-hq 设置
+DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
