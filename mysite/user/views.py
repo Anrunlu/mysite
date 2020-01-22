@@ -1,9 +1,11 @@
 import string
 import random
 import time
+import csv, io
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import permission_required
 from django.urls import reverse
 from django.http import JsonResponse
 from django.core.mail import send_mail
@@ -191,3 +193,34 @@ def forgot_password(request):
     context['form'] = form
     context['return_back_url'] = redirect_to
     return render(request, 'user/forgot_password.html', context)
+
+@permission_required('admin.can_add_log_entry')
+def user_upload(request):
+    # 批量注册用户
+    template = "user/user_upload.html"
+    prompt = {
+        'order': ' Order of the CSV should be username, password, nickname'
+    }
+
+    if request.method == "GET":
+        return render(request, template, prompt)
+    
+    csv_file = request.FILES['file']
+
+    if not csv_file.name.endswith('.csv'):
+        messages.error(request, "This is not a csv file")
+
+    data_set = csv_file.read().decode('UTF-8')
+    io_string = io.StringIO(data_set)
+    next(io_string)
+    for colum in csv.reader(io_string, delimiter=',', quotechar="|"):
+        user = User.objects.create_user(
+            username = colum[0],
+            password = colum[1]
+        )
+        user.save()
+        profile, created = Profile.objects.get_or_create(user=user)
+        profile.nickname = colum[2]
+        profile.save()
+    context = {}
+    return render(request, template, context)
