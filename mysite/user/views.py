@@ -194,7 +194,7 @@ def forgot_password(request):
     context['return_back_url'] = redirect_to
     return render(request, 'user/forgot_password.html', context)
 
-@permission_required('admin.can_add_log_entry')
+@permission_required('admin.add_log_entry')
 def user_upload(request):
     # 批量注册用户
     template = "user/user_upload.html"
